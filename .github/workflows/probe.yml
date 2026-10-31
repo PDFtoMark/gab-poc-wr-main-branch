@@ -1,0 +1,21 @@
+name: Probe consumer
+on:
+  workflow_run:
+    workflows: ["Close release"]
+    types: [completed]
+    branches: [trunk]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: context
+        run: |
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "EVENT_NAME=$GITHUB_EVENT_NAME"
+          git log -1 --format='CHECKOUT_SUBJECT=%s'
+          if [ -f pr-marker.txt ]; then echo "MARKER_PRESENT=$(cat pr-marker.txt)"; else echo "MARKER_ABSENT"; fi
+          jq -c '{hb:.workflow_run.head_branch,hs:.workflow_run.head_sha,hr:.workflow_run.head_repository.full_name,ev:.workflow_run.event,concl:.workflow_run.conclusion}' "$GITHUB_EVENT_PATH"
