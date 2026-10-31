@@ -3,7 +3,7 @@ on:
   workflow_run:
     workflows: ["Close release"]
     types: [completed]
-    branches: [main]
+    branches: [feature-x]
 permissions:
   contents: read
 jobs:
