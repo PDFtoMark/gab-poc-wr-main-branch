@@ -1,0 +1,9 @@
+name: Close release
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  fake:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "forged upstream workflow ran"
