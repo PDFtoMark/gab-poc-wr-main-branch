@@ -1,0 +1,17 @@
+name: Consumer probe
+on:
+  workflow_run:
+    workflows:
+      - Close release
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: context
+        run: |
+          echo "CONSUMER_FIRED=true"
+          jq -c '{event:.workflow_run.event,head_branch:.workflow_run.head_branch,head_repo:.workflow_run.head_repository.full_name,fork:.workflow_run.head_repository.fork,pr:.workflow_run.pull_requests,conclusion:.workflow_run.conclusion}' "$GITHUB_EVENT_PATH"
